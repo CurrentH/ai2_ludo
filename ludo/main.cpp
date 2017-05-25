@@ -60,7 +60,9 @@ int main(int argc, char *argv[]){
         p1.whichRound( i );
         g.start();
         a.exec();
+        while( a.closingDown() ){}
         g.reset();
+        if( g.wait() ){}
     }
     return 0;
 }

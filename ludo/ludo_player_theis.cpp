@@ -4,7 +4,7 @@
 ludo_player_theis::ludo_player_theis():
     pos_start_of_turn(16),pos_end_of_turn(16),dice_roll(0)
 {
-    std::vector<unsigned> topology {17,15,10,4};
+    std::vector<unsigned> topology {17,20,20,20,10,7,4};
     myNet = new net( topology );
 }
 
@@ -15,29 +15,48 @@ void ludo_player_theis::setGameBoard( game* _g ){
 void ludo_player_theis::whichRound( int _round ){
     round = _round;
     gameBoard->wantOutput = false;
+
     if(round%100 == 0){
         gameBoard->wantOutput = true;
         std::cout << "Round: " << round << " Error: " << myNet->getRecentAverageError() << std::endl;
     }
+
 }
 
 int ludo_player_theis::useNeuralNetwork(){
+    //  Set input values
     std::vector<double> inputVals(gameBoard->player_positions.begin(), gameBoard->player_positions.end());
     inputVals.push_back( dice_roll );
+
+    for(int i = 0; i < 16; i++){
+        if( inputVals[i] >= 0 ){
+            inputVals[i] /= 99;
+        }
+    }
+    inputVals[16] -= 3;
+    inputVals[16] /= 6;
+
     myNet->feedForward( inputVals );
 
+    //  Set target choice
     std::vector<double> targetVals {-1, -1, -1, -1};
 
     int tmp = choosePawnNumber();
     if(tmp != -1){
         targetVals[tmp] = 1;
     }
+
     myNet->backProp( targetVals );
+
+    //  Get the net output
+    std::vector<double> resultVals {0, 0, 0, 0};
+    myNet->getResults( resultVals );
 
     return tmp;
 }
 
 int ludo_player_theis::choosePawnNumber(){
+
     //  Try to get out from home
     if(dice_roll == 6){
         for(int i = 0; i < 4; ++i){
@@ -123,3 +142,23 @@ void ludo_player_theis::post_game_analysis(std::vector<int> relative_pos){
     }
     emit turn_complete(game_complete);
 }
+
+/*
+std::cout << "input: ";
+for(int i = 0; i < 17; i++){
+    std::cout << inputVals[i] << " ";
+}
+std::cout << std::endl;
+
+std::cout << "target: ";
+for(int i = 0; i < 4; i++){
+    std::cout << targetVals[i] << " ";
+}
+std::cout << std::endl;
+
+std::cout << "result: ";
+for(int i = 0; i < 4; i++){
+    std::cout << resultVals[i] << " ";
+}
+std::cout << std::endl << std::endl;
+*/

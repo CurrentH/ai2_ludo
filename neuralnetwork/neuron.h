@@ -32,7 +32,7 @@ class neuron
 
     private:
         //  Private attributes
-            const double eta = 0.5;      //  [0.0..1.0] overall net training rate
+            const double eta = 0.7;      //  [0.0..1.0] overall net training rate
             const double alpha = 0.0;    //  [0.0..n] multiplier of last weight change (momentum)
             double m_gradient;
             double m_outputVal;
