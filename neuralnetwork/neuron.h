@@ -23,9 +23,7 @@ class neuron
             void updateInputWeights( layer &prevLayer );
 
             void resetGradiant();
-            void setNeuronParameter(double _eta, double _alpha){
-                eta = _eta; alpha = _alpha;
-                std::cout << eta << "\t" << alpha << std::endl; }
+            void setNeuronParameter(double _eta, double _alpha){eta = _eta; alpha = _alpha;}
 
     public:
 		//  Public attributes

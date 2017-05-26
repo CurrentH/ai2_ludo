@@ -7,6 +7,8 @@
 #include "ludo_player_random.h"
 #include "positions_and_dice.h"
 
+#include <fstream>
+
 Q_DECLARE_METATYPE( positions_and_dice )
 
 int main(int argc, char *argv[]){
@@ -56,17 +58,33 @@ int main(int argc, char *argv[]){
     QObject::connect(&g, SIGNAL(player4_end(std::vector<int>)),    &p4,SLOT(post_game_analysis(std::vector<int>)));
     QObject::connect(&p4,SIGNAL(turn_complete(bool)),              &g, SLOT(turnComplete(bool)));
 
-    for(int e = 0; e < 5; e++)
+    for(int _e = 1; _e <= 5; _e++)
     {
-        for(int _eta = 0; _eta <= 100; _eta++)
+        std::string outer = std::to_string(_e);
+
+        for(int _eta = 0; _eta <= 10; _eta++)
         {
-            double eta = _eta/100.0;
-            for(int _alpha = 0; _alpha <= 100; _alpha++)
+            std::string middle = std::to_string(_eta);
+
+            double eta = _eta/10.0;
+
+            for(int _alpha = 0; _alpha <= 10; _alpha++)
             {
-                double alpha = _alpha/100.0;
+                std::string inner = std::to_string(_alpha);
+
+                double alpha = _alpha/10.0;
                 p1.setNeuralNetworkParameters(eta, alpha);
 
-                for(int i = 0; i <= 100; ++i)
+                //  Set filename
+                std::string filename = "testoutput/file_" + outer + "_" + middle + "_" + inner +".csv";
+                std::cout << filename << std::endl;
+                std::cout << "round,score,error" << std::endl;
+
+                //  Open file
+                std::fstream fs;
+                fs.open(filename, std::fstream::out | std::fstream::app);
+
+                for(int i = 0; i <= 1000; ++i)
                 {
                     p1.whichRound( i );
                     g.start();
@@ -76,17 +94,36 @@ int main(int argc, char *argv[]){
                     if( g.getWinnerThisTurn() == 0 ) {
                         p1.updateWeights();
                     }
-                    if( i == 20000 ){
-                        p1.useNeuralNetworkChoice();
+                    if( i == 800 ){
+                        p1.useNeuralNetworkChoice( false );
                         g.resetStandings();
+                    }
+
+                    if( i %100 == 0 ){
+                        //  Print to file   // på 0-1000 kommer der 11 udskrivninger.
+                        if( fs.is_open() ){
+                            fs << i << "," << (g.getStandingPlayer0()/30000.0) << "," << p1.getNeuralNetworkError() << std::endl;
+                        }else{
+                            std::cout << "ERROR IN OPENING FILE AND PRINTING OUTPUT" << std::endl;
+                            std::cout << filename << std::endl;
+                            std::cout << "round,score,error" << std::endl;
+                            std::cout << i << "," << (g.getStandingPlayer0()/30000.0) << "," << p1.getNeuralNetworkError() << std::endl;
+                        }
+
                     }
 
                     g.reset();
                     if( g.wait() ){}
                 }
+                fs.close();
 
+                //  Collect data, and ready file
+                std::cout << std::endl;
+
+                //  Reset standing, and do it again.
+                g.resetStandings();
+                p1.useNeuralNetworkChoice( false );
             }
-            std::cout << std::endl;
         }
     }
 

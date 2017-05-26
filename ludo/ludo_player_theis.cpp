@@ -14,13 +14,10 @@ void ludo_player_theis::setGameBoard( game* _g ){
 
 void ludo_player_theis::whichRound( int _round ){
     round = _round;
-    gameBoard->wantOutput = false;
+}
 
-    if(round%100 == 0){
-        gameBoard->wantOutput = true;
-        std::cout << "Round: " << round << " Error: " << myNet->getRecentAverageError() << std::endl;
-    }
-
+double ludo_player_theis::getNeuralNetworkError(){
+    return myNet->getRecentAverageError();
 }
 
 void ludo_player_theis::updateWeights(){
@@ -159,6 +156,6 @@ void ludo_player_theis::post_game_analysis(std::vector<int> relative_pos){
     myNet->resetGradiant();
 }
 
-void ludo_player_theis::useNeuralNetworkChoice(){
-    trainingOver = true;
+void ludo_player_theis::useNeuralNetworkChoice( bool _flag ){
+    trainingOver = _flag;
 }

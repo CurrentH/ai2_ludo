@@ -25,8 +25,9 @@ class ludo_player_theis : public QObject
         void whichRound( int round );
         void setGameBoard(game*);
         void updateWeights();
-        void useNeuralNetworkChoice();
+        void useNeuralNetworkChoice(bool _flag);
 
+        double getNeuralNetworkError();
         void getResult();
         void setNeuralNetworkParameters(double eta, double alpha){ myNet->setNeuralNetworkParameters(eta, alpha); }
 

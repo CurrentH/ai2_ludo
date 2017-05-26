@@ -55,6 +55,7 @@ class game : public QThread
 
         int getWinnerThisTurn(){ return winnerThisTurn; }
         void resetStandings(){ winner[0] = 0; winner[1] = 0; winner[2] = 0; winner[3] = 0; }
+        int getStandingPlayer0(){return winner[0]; }
 
     signals:
         void player1_start(positions_and_dice);
