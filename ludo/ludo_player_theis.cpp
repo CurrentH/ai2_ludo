@@ -4,7 +4,7 @@
 ludo_player_theis::ludo_player_theis():
     pos_start_of_turn(16),pos_end_of_turn(16),dice_roll(0)
 {
-    std::vector<unsigned> topology {17,20,20,20,10,7,4};
+    std::vector<unsigned> topology {17,20,15,10,4};
     myNet = new net( topology );
 }
 
@@ -23,6 +23,16 @@ void ludo_player_theis::whichRound( int _round ){
 
 }
 
+void ludo_player_theis::updateWeights(){
+    myNet->updateWeights();
+}
+
+void ludo_player_theis::getResult(){
+    std::vector<double> resultVals {0, 0, 0, 0};
+    myNet->getResults( resultVals );
+    myNet->showVectorVals( std::string("Output: "), resultVals );
+}
+
 int ludo_player_theis::useNeuralNetwork(){
     //  Set input values
     std::vector<double> inputVals(gameBoard->player_positions.begin(), gameBoard->player_positions.end());
@@ -30,29 +40,34 @@ int ludo_player_theis::useNeuralNetwork(){
 
     for(int i = 0; i < 16; i++){
         if( inputVals[i] >= 0 ){
-            inputVals[i] /= 99;
+            inputVals[i] /= 100;
         }
     }
     inputVals[16] -= 3;
     inputVals[16] /= 6;
 
+    //  Input values into neural network
     myNet->feedForward( inputVals );
 
-    //  Set target choice
-    std::vector<double> targetVals {-1, -1, -1, -1};
-
-    int tmp = choosePawnNumber();
-    if(tmp != -1){
-        targetVals[tmp] = 1;
+    //  If still training network
+    if( !trainingOver ){
+        //  Output target for neural network
+        std::vector<double> targetVals {0, 0, 0, 0};
+        int tmp = choosePawnNumber();
+        if(tmp != -1){
+            targetVals[tmp] = 1;
+            myNet->backProp( targetVals );
+            return tmp;
+        }else{
+            return -1;
+        }
     }
 
-    myNet->backProp( targetVals );
-
-    //  Get the net output
+    //  Else, get the values from the network.
     std::vector<double> resultVals {0, 0, 0, 0};
     myNet->getResults( resultVals );
-
-    return tmp;
+    std::vector<double>::iterator result = std::max_element(resultVals.begin(), resultVals.end());
+    return std::distance(resultVals.begin(), result);
 }
 
 int ludo_player_theis::choosePawnNumber(){
@@ -65,7 +80,7 @@ int ludo_player_theis::choosePawnNumber(){
             }
         }
     }
-
+/*
     //  Move pawn into "goal zone"
     for(int i = 0; i < 4; ++i){
         if( pos_start_of_turn[i] > 0 && pos_start_of_turn[i] < 52 && pos_start_of_turn[i] != 99){
@@ -103,7 +118,7 @@ int ludo_player_theis::choosePawnNumber(){
             return i;
         }
     }
-
+*/
     //  If nothing else, just more the first one
     for(int i = 0; i < 4; ++i){
         if(pos_start_of_turn[i]>=0 && pos_start_of_turn[i] != 99){
@@ -141,24 +156,9 @@ void ludo_player_theis::post_game_analysis(std::vector<int> relative_pos){
         }
     }
     emit turn_complete(game_complete);
+    myNet->resetGradiant();
 }
 
-/*
-std::cout << "input: ";
-for(int i = 0; i < 17; i++){
-    std::cout << inputVals[i] << " ";
+void ludo_player_theis::useNeuralNetworkChoice(){
+    trainingOver = true;
 }
-std::cout << std::endl;
-
-std::cout << "target: ";
-for(int i = 0; i < 4; i++){
-    std::cout << targetVals[i] << " ";
-}
-std::cout << std::endl;
-
-std::cout << "result: ";
-for(int i = 0; i < 4; i++){
-    std::cout << resultVals[i] << " ";
-}
-std::cout << std::endl << std::endl;
-*/

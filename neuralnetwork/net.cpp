@@ -43,6 +43,14 @@ void net::feedForward( const std::vector<double> &inputVals )
 
 }
 
+void net::getErrorVals( const std::vector<double> &targetVals, std::vector<double> &errorVals ){
+    layer &outputLayer = m_layers.back();
+    for( unsigned n = 0; n < outputLayer.size() - 1; ++n)
+    {
+        errorVals[n] = targetVals[n] - outputLayer[n].getOutputVal();
+    }
+}
+
 void net::backProp( const std::vector<double> &targetVals )
 {
     //  Calculate overall net error (Root mean square of output neuron errors)
@@ -93,6 +101,21 @@ void net::backProp( const std::vector<double> &targetVals )
 
 }
 
+void net::updateWeights(){
+    //  For all layers from outputs to first hidden layer.
+    //  update connection weights
+    for( unsigned layerNum = m_layers.size() - 1; layerNum > 0; --layerNum )
+    {
+        layer &prevLayer = m_layers[layerNum - 1];
+        layer &layer = m_layers[ layerNum ];
+
+        for( unsigned n = 0; n < layer.size() - 1; ++n )
+        {
+            layer[n].updateInputWeights( prevLayer );
+        }
+    }
+}
+
 void net::getResults( std::vector<double> &resultVals ) const
 {
     resultVals.clear();
@@ -116,4 +139,19 @@ void net::showVectorVals(std::string label, std::vector<double> &v)
     }
 
     std::cout << std::endl;
+}
+
+void net::resetGradiant(){
+    //  For all layers from outputs to first hidden layer.
+    //  reset all gradiants.
+    for( unsigned layerNum = m_layers.size() - 1; layerNum > 0; --layerNum )
+    {
+        layer &prevLayer = m_layers[layerNum - 1];
+        layer &layer = m_layers[ layerNum ];
+
+        for( unsigned n = 0; n < layer.size() - 1; ++n )
+        {
+            layer[n].resetGradiant();
+        }
+    }
 }

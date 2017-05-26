@@ -38,13 +38,13 @@ double neuron::getOutputVal( void ) const
 void neuron::calculateOutputGradients( double targetVal )
 {
     double delta = targetVal - m_outputVal;
-    m_gradient = delta * transferFunctionDerivative( m_outputVal );
+    m_gradient += delta * transferFunctionDerivative( m_outputVal );
 }
 
 void neuron::calculateHiddenGradients( const layer &nextLayer )
 {
     double dow = sumDOW( nextLayer );
-    m_gradient = dow * transferFunctionDerivative( m_outputVal );
+    m_gradient += dow * transferFunctionDerivative( m_outputVal );
 }
 
 void neuron::updateInputWeights( layer &prevLayer )
@@ -58,12 +58,9 @@ void neuron::updateInputWeights( layer &prevLayer )
         double oldDeltaWeight = neuron.m_outputWeights[ m_myIndex ].getDeltaWeight();
         double newDeltaWeight =
                 //  Individual input. Magnified by the gradient and the train rate:
-                eta
-                * neuron.getOutputVal()
-                * m_gradient
+                eta * neuron.getOutputVal() * m_gradient
                 //  Also add momentum, which is a fraction of the previous delta weight
-                + alpha
-                * oldDeltaWeight;
+                + alpha * oldDeltaWeight;
         neuron.m_outputWeights[ m_myIndex ].setDeltaWeight( newDeltaWeight );
         neuron.m_outputWeights[ m_myIndex ].setWeight();
     }
@@ -94,6 +91,9 @@ double neuron::sumDOW( const layer &nextLayer ) const
     return sum;
 }
 
+void neuron::resetGradiant(){
+    m_gradient = 0;
+}
 
 
 

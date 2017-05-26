@@ -56,11 +56,20 @@ int main(int argc, char *argv[]){
     QObject::connect(&g, SIGNAL(player4_end(std::vector<int>)),    &p4,SLOT(post_game_analysis(std::vector<int>)));
     QObject::connect(&p4,SIGNAL(turn_complete(bool)),              &g, SLOT(turnComplete(bool)));
 
-    for(int i = 0; i < 1000000; ++i){
+    for(int i = 0; i < 30000; ++i){
         p1.whichRound( i );
         g.start();
         a.exec();
         while( a.closingDown() ){}
+
+        if( g.getWinnerThisTurn() == 0 ) {
+            p1.updateWeights();
+        }
+        if( i == 20000 ){
+            p1.useNeuralNetworkChoice();
+            g.resetStandings();
+        }
+
         g.reset();
         if( g.wait() ){}
     }

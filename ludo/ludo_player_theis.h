@@ -24,6 +24,10 @@ class ludo_player_theis : public QObject
         ludo_player_theis();
         void whichRound( int round );
         void setGameBoard(game*);
+        void updateWeights();
+        void useNeuralNetworkChoice();
+
+        void getResult();
 
     //  attributes
     private:
@@ -32,6 +36,7 @@ class ludo_player_theis : public QObject
         int round = 0;
 
         bool flag = false;
+        bool trainingOver = false;
 
     //  attributes
     public:

@@ -141,7 +141,7 @@ void game::movePiece(int relative_piece){
     } else {
         //convert to relative position
         if(relative_pos == 99){
-            std::cout << "I tought this would be it ";
+            //std::cout << "I tought this would be it ";
         } else if(relative_pos == 51){ //if people land on 51, they shouldn't be sent to goal stretch
             switch(color){
             case 0 : relative_pos = 51; break;
@@ -249,6 +249,7 @@ void game::turnComplete(bool win){
 
     if(game_complete){
         winner[color]++;
+        winnerThisTurn = color;
         if(wantOutput){
             std::cout << "player: " << color << " won" << std::endl;
             std::cout << "----Standing----" << std::endl;

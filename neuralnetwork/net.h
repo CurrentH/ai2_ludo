@@ -16,6 +16,10 @@ class net
         double getRecentAverageError(void) const;
         void showVectorVals( std::string label, std::vector<double> &v);
 
+        void updateWeights();
+        void resetGradiant();
+        void getErrorVals( const std::vector<double> &targetVals, std::vector<double> &errorVals );
+
     public:
 		//  Public Attributes
 

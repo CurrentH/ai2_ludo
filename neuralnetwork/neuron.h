@@ -21,6 +21,8 @@ class neuron
             void calculateOutputGradients( double targetVal );
             void calculateHiddenGradients( const layer &nextLayer );
             void updateInputWeights( layer &prevLayer );
+
+            void resetGradiant();
     public:
 		//  Public attributes
 
@@ -32,8 +34,8 @@ class neuron
 
     private:
         //  Private attributes
-            const double eta = 0.7;      //  [0.0..1.0] overall net training rate
-            const double alpha = 0.0;    //  [0.0..n] multiplier of last weight change (momentum)
+            const double eta = 0.01;      //  [0.0..1.0] overall net training rate
+            const double alpha = 0.3;    //  [0.0..n] multiplier of last weight change (momentum)
             double m_gradient;
             double m_outputVal;
             unsigned m_myIndex;
@@ -41,3 +43,5 @@ class neuron
 };
 
 #endif // NEURON_H
+//0.1,06
+//0.01,0.3 - 35%
