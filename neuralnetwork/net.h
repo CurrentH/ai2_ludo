@@ -20,6 +20,8 @@ class net
         void resetGradiant();
         void getErrorVals( const std::vector<double> &targetVals, std::vector<double> &errorVals );
 
+        void setNeuralNetworkParameters(double eta, double alpha);
+
     public:
 		//  Public Attributes
 

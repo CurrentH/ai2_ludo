@@ -56,22 +56,40 @@ int main(int argc, char *argv[]){
     QObject::connect(&g, SIGNAL(player4_end(std::vector<int>)),    &p4,SLOT(post_game_analysis(std::vector<int>)));
     QObject::connect(&p4,SIGNAL(turn_complete(bool)),              &g, SLOT(turnComplete(bool)));
 
-    for(int i = 0; i < 30000; ++i){
-        p1.whichRound( i );
-        g.start();
-        a.exec();
-        while( a.closingDown() ){}
+    for(int e = 0; e < 5; e++)
+    {
+        for(int _eta = 0; _eta <= 100; _eta++)
+        {
+            double eta = _eta/100.0;
+            for(int _alpha = 0; _alpha <= 100; _alpha++)
+            {
+                double alpha = _alpha/100.0;
+                p1.setNeuralNetworkParameters(eta, alpha);
 
-        if( g.getWinnerThisTurn() == 0 ) {
-            p1.updateWeights();
-        }
-        if( i == 20000 ){
-            p1.useNeuralNetworkChoice();
-            g.resetStandings();
-        }
+                for(int i = 0; i <= 100; ++i)
+                {
+                    p1.whichRound( i );
+                    g.start();
+                    a.exec();
+                    while( a.closingDown() ){}
 
-        g.reset();
-        if( g.wait() ){}
+                    if( g.getWinnerThisTurn() == 0 ) {
+                        p1.updateWeights();
+                    }
+                    if( i == 20000 ){
+                        p1.useNeuralNetworkChoice();
+                        g.resetStandings();
+                    }
+
+                    g.reset();
+                    if( g.wait() ){}
+                }
+
+            }
+            std::cout << std::endl;
+        }
     }
+
+
     return 0;
 }

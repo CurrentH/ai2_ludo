@@ -23,6 +23,10 @@ class neuron
             void updateInputWeights( layer &prevLayer );
 
             void resetGradiant();
+            void setNeuronParameter(double _eta, double _alpha){
+                eta = _eta; alpha = _alpha;
+                std::cout << eta << "\t" << alpha << std::endl; }
+
     public:
 		//  Public attributes
 
@@ -34,8 +38,8 @@ class neuron
 
     private:
         //  Private attributes
-            const double eta = 0.01;      //  [0.0..1.0] overall net training rate
-            const double alpha = 0.3;    //  [0.0..n] multiplier of last weight change (momentum)
+            double eta = 0.01;      //  [0.0..1.0] overall net training rate
+            double alpha = 0.4;    //  [0.0..n] multiplier of last weight change (momentum)
             double m_gradient;
             double m_outputVal;
             unsigned m_myIndex;
@@ -43,5 +47,11 @@ class neuron
 };
 
 #endif // NEURON_H
-//0.1,06
+
+//  Few rules
 //0.01,0.3 - 35%
+//0.007,0.4 - 45%
+//0.01,0.4 - 46%
+//  All rules
+//0.01,0.5 - 43%
+//0.01,0.4 - 40%

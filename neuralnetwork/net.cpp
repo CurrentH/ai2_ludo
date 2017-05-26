@@ -141,12 +141,23 @@ void net::showVectorVals(std::string label, std::vector<double> &v)
     std::cout << std::endl;
 }
 
+void net::setNeuralNetworkParameters(double eta, double alpha){
+    for( unsigned layerNum = m_layers.size() - 1; layerNum > 0; --layerNum )
+    {
+        layer &layer = m_layers[ layerNum ];
+
+        for( unsigned n = 0; n < layer.size() - 1; ++n )
+        {
+            layer[n].setNeuronParameter(eta, alpha);
+        }
+    }
+}
+
 void net::resetGradiant(){
     //  For all layers from outputs to first hidden layer.
     //  reset all gradiants.
     for( unsigned layerNum = m_layers.size() - 1; layerNum > 0; --layerNum )
     {
-        layer &prevLayer = m_layers[layerNum - 1];
         layer &layer = m_layers[ layerNum ];
 
         for( unsigned n = 0; n < layer.size() - 1; ++n )
@@ -155,3 +166,24 @@ void net::resetGradiant(){
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

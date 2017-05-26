@@ -80,7 +80,7 @@ int ludo_player_theis::choosePawnNumber(){
             }
         }
     }
-/*
+
     //  Move pawn into "goal zone"
     for(int i = 0; i < 4; ++i){
         if( pos_start_of_turn[i] > 0 && pos_start_of_turn[i] < 52 && pos_start_of_turn[i] != 99){
@@ -118,7 +118,7 @@ int ludo_player_theis::choosePawnNumber(){
             return i;
         }
     }
-*/
+
     //  If nothing else, just more the first one
     for(int i = 0; i < 4; ++i){
         if(pos_start_of_turn[i]>=0 && pos_start_of_turn[i] != 99){

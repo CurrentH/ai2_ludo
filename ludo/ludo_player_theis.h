@@ -28,6 +28,7 @@ class ludo_player_theis : public QObject
         void useNeuralNetworkChoice();
 
         void getResult();
+        void setNeuralNetworkParameters(double eta, double alpha){ myNet->setNeuralNetworkParameters(eta, alpha); }
 
     //  attributes
     private:
