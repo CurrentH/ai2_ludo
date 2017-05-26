@@ -84,7 +84,7 @@ int main(int argc, char *argv[]){
                 std::fstream fs;
                 fs.open(filename, std::fstream::out | std::fstream::app);
 
-                for(int i = 0; i <= 1000; ++i)
+                for(int i = 0; i <= 30000; ++i)
                 {
                     p1.whichRound( i );
                     g.start();
@@ -94,8 +94,8 @@ int main(int argc, char *argv[]){
                     if( g.getWinnerThisTurn() == 0 ) {
                         p1.updateWeights();
                     }
-                    if( i == 800 ){
-                        p1.useNeuralNetworkChoice( false );
+                    if( i == 20000 ){
+                        p1.useNeuralNetworkChoice( true );
                         g.resetStandings();
                     }
 
