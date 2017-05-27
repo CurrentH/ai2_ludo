@@ -4,7 +4,7 @@
 ludo_player_theis::ludo_player_theis():
     pos_start_of_turn(16),pos_end_of_turn(16),dice_roll(0)
 {
-    std::vector<unsigned> topology {17,20,15,10,4};
+    std::vector<unsigned> topology {17,10,10,10,4};
     myNet = new net( topology );
 }
 
